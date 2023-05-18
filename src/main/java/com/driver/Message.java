@@ -14,16 +14,14 @@ public class Message {
     public Message(int id, String content) {
         this.id = id;
         this.content = content;
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy.HH:mm:ss");
-        String time = df.format(new Date());
-        this.timestamp = new Date(time);
+
     }
 
-//    public Message(int id, String content, Date timestamp) {
-//        this.id = id;
-//        this.content = content;
-//        this.timestamp = timestamp;
-//    }
+    public Message(int id, String content, Date timestamp) {
+        this.id = id;
+        this.content = content;
+        this.timestamp = timestamp;
+    }
 
     public int getId() {
         return id;

@@ -2,6 +2,7 @@ package com.driver;
 
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -70,7 +71,8 @@ public class WhatsappRepository
     public int createMessage(String content)
     {
         msgCountTillNow++;
-        Message msg = new Message(msgCountTillNow, content);
+        Timestamp ts = DateToTimestampExample1.date();
+        Message msg = new Message(msgCountTillNow, content, new Date(ts.getTime()));
         return msgCountTillNow;
     }
 
