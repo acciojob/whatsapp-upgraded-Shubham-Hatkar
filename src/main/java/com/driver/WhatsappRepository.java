@@ -19,11 +19,11 @@ public class WhatsappRepository
 
     private HashMap<Group, List<Message>> groupAndMessagesDB = new HashMap<>(); // group, list of msgs
 
+    private HashMap<User,List<Message>> senderAndMsgsDB = new HashMap<>(); // user, msgs of user
 
     private int groupCountTillNow = 0;
 
     private int msgCountTillNow = 0;
-
 
 
     public HashMap<String, User> getUsersDB() {
@@ -106,6 +106,14 @@ public class WhatsappRepository
         List<Message> msgList = groupAndMessagesDB.get(group);
         msgList.add(message);
         groupAndMessagesDB.put(group, msgList);
+
+        // put in sender and its msgs
+        List<Message> listOfMsgs = new ArrayList<>();
+        if(senderAndMsgsDB.containsKey(sender)) listOfMsgs = senderAndMsgsDB.get(sender);
+        listOfMsgs.add(message);
+        senderAndMsgsDB.put(sender,listOfMsgs);
+
+        // return total no of msgs in group
         int countOfMsgsTillNowInCurrentGroup = msgList.size();
         return countOfMsgsTillNowInCurrentGroup;
     }
@@ -138,4 +146,52 @@ public class WhatsappRepository
         groupAndAdmin.put(group,user);
         return "SUCCESS";
     }
+
+    public  int removeUser(User user) throws Exception {
+        boolean isUserFoundInAnyGroup = false;
+        Group userFoundInGroupName = null;
+        for(Group group : groupAndUsersList.keySet())
+        {
+            for(User u : groupAndUsersList.get(group))
+            {
+                if(user == u)
+                {
+                    isUserFoundInAnyGroup = true;
+                    userFoundInGroupName = group;
+                }
+            }
+        }
+        if(isUserFoundInAnyGroup == false) throw new Exception("User not found");
+        if(groupAndAdmin.get(userFoundInGroupName) == user) throw new Exception("Cannot remove admin");
+
+        // Delete the user from group
+        List<User> listInWhichUserIsPresent = groupAndUsersList.get(userFoundInGroupName);
+        for(User u : listInWhichUserIsPresent)
+        {
+            if(u == user) listInWhichUserIsPresent.remove(u);
+        }
+
+        // Delete all msgs sent by user
+        List<Message> msgsInGroupSentByUser = senderAndMsgsDB.get(user);
+        senderAndMsgsDB.remove(user);
+
+        List<Message> allMsgsInGroup = groupAndMessagesDB.get(userFoundInGroupName);
+        for(Message msg : msgsInGroupSentByUser)
+        {
+            for(Message m : allMsgsInGroup)
+            {
+                if(msg == m)
+                {
+                    allMsgsInGroup.remove(m);
+                    msgCountTillNow--;
+                }
+            }
+        }
+
+        int currNoOfUsersInGroup = groupAndUsersList.get(userFoundInGroupName).size();
+        int currNoOfMsgsInGroup = groupAndMessagesDB.get(userFoundInGroupName).size();
+        int currNoOfMsgsTillNow = msgCountTillNow;
+        return (currNoOfUsersInGroup + currNoOfMsgsInGroup + currNoOfMsgsTillNow);
+    }
+
 }
