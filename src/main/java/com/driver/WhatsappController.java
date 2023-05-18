@@ -23,12 +23,13 @@ public class WhatsappController {
     WhatsappService whatsappService = new WhatsappService();
 
     @PostMapping("/add-user")
-    public String createUser(String name, String mobile) throws Exception {
+    public String createUser(@RequestParam("name") String name, @RequestParam("mobile") String mobile) throws Exception {
         //If the mobile number exists in database, throw "User already exists" exception
         //Otherwise, create the user and return "SUCCESS"
 
         return whatsappService.createUser(name, mobile);
     }
+
 
     @PostMapping("/add-group")
     public Group createGroup(List<User> users){
@@ -60,6 +61,8 @@ public class WhatsappController {
 
         return whatsappService.sendMessage(message, sender, group);
     }
+
+
     @PutMapping("/change-admin")
     public String changeAdmin(User approver, User user, Group group) throws Exception{
         //Throw "Group does not exist" if the mentioned group does not exist
@@ -69,24 +72,26 @@ public class WhatsappController {
 
         return whatsappService.changeAdmin(approver, user, group);
     }
+//
+//    @DeleteMapping("/remove-user")
+//    public int removeUser(User user) throws Exception{
+//        //A user belongs to exactly one group
+//        //If user is not found in any group, throw "User not found" exception
+//        //If user is found in a group and it is the admin, throw "Cannot remove admin" exception
+//        //If user is not the admin, remove the user from the group, remove all its messages from all the databases, and update relevant attributes accordingly.
+//        //If user is removed successfully, return (the updated number of users in the group + the updated number of messages in group + the updated number of overall messages)
+//
+//        return whatsappService.removeUser(user);
+//    }
+//
+//    @GetMapping("/find-messages")
+//    public String findMessage(Date start, Date end, int K) throws Exception{
+//        // This is a bonus problem and does not contains any marks
+//        // Find the Kth latest message between start and end (excluding start and end)
+//        // If the number of messages between given time is less than K, throw "K is greater than the number of messages" exception
+//
+//        return whatsappService.findMessage(start, end, K);
+//    }
 
-    @DeleteMapping("/remove-user")
-    public int removeUser(User user) throws Exception{
-        //A user belongs to exactly one group
-        //If user is not found in any group, throw "User not found" exception
-        //If user is found in a group and it is the admin, throw "Cannot remove admin" exception
-        //If user is not the admin, remove the user from the group, remove all its messages from all the databases, and update relevant attributes accordingly.
-        //If user is removed successfully, return (the updated number of users in the group + the updated number of messages in group + the updated number of overall messages)
 
-        return whatsappService.removeUser(user);
-    }
-
-    @GetMapping("/find-messages")
-    public String findMessage(Date start, Date end, int K) throws Exception{
-        // This is a bonus problem and does not contains any marks
-        // Find the Kth latest message between start and end (excluding start and end)
-        // If the number of messages between given time is less than K, throw "K is greater than the number of messages" exception
-
-        return whatsappService.findMessage(start, end, K);
-    }
 }
