@@ -127,7 +127,7 @@ public class WhatsappRepository
 
         // if group exist check admin of the group
         User admin = groupAndAdmin.get(group);
-        if(admin != approver)
+        if(admin == approver)
         {
             throw new Exception("Approver does not have rights");
         }
