@@ -156,15 +156,17 @@ public class WhatsappRepository
         {
             for(User u : groupAndUsersList.get(group))
             {
-                if(user == u)
+                if(user.equals(u))
                 {
                     isUserFoundInAnyGroup = true;
                     userFoundInGroupName = group;
+                    break;
                 }
             }
+            if(isUserFoundInAnyGroup == true) break;
         }
         if(isUserFoundInAnyGroup == false) throw new Exception("User not found");
-        if(groupAndAdmin.get(userFoundInGroupName) == user) throw new Exception("Cannot remove admin");
+        if(groupAndAdmin.get(userFoundInGroupName).equals(user)) throw new Exception("Cannot remove admin");
 
         // Delete the user from group
         List<User> listInWhichUserIsPresent = groupAndUsersList.get(userFoundInGroupName);
